@@ -74,5 +74,5 @@ fabric.properties
 **/java/local/
 **/java/misc/
 
-lib/
+/lib
 config.json
