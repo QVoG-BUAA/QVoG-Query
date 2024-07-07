@@ -1,14 +1,14 @@
 # QVoG Query
 
-QVoG 查询库
+> QVoG 查询库。
 
 ---
 
 ## 项目构建
 
-该项目的构建依赖于 [QVoG-Engine](https://github.com/QVoG-BUAA/QVoG-Engine)，需要将其构建生成的 `QVoGine.jar` 放置于项目下的 `lib` 目录。
+该项目的构建依赖于 [QVoG-Engine](https://github.com/QVoG-BUAA/QVoG-Engine)，需要将其构建生成的 JAR 包放置于项目下的 `lib` 目录，并根据版本号修改 `pom.xml` 中的引用。
 
-在 IDEA 中，选择 Build > Build Artifacts... > Query:jar > Build 生成 jar 包至 `out` 目录下。生成的 jar 包可由 [QVoG-Executor](https://github.com/QVoG-BUAA/QVoG-Executor) 加载执行，执行方式见对应仓库。
+在 IDEA 中，使用 maven install 在 target 目录下生成 JAR 包，生成的 JAR 包可由 QVoG-Engine 加载运行。
 
 ## 快速开始
 
@@ -38,7 +38,7 @@ public class CustomQuery extends PythonQuery {
 }
 ```
 
-其中的 `main` 方法用于在编写时进行测试，如果要使用，则需要在项目根目录添加 `config.json`，具体格式见 [QVoG-Executor](https://github.com/QVoG-BUAA/QVoG-Executor)。
+其中的 `main` 方法用于在编写时进行测试，如果要使用，则需要在项目根目录添加 `config.json`，具体格式见 [QVoG-Engine](https://github.com/QVoG-BUAA/QVoG-Engine)。
 
 ### 查询编写
 
