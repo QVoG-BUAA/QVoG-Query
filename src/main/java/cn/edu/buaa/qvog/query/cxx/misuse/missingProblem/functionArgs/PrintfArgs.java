@@ -27,11 +27,11 @@ public class PrintfArgs extends CxxQuery {
                 .from("source", value -> value.toStream().anyMatch(
                         e -> e instanceof CallExpression callExpression &&
                                 "printf".equals(callExpression.getFunction().getName()) &&
-                                !(callExpression.getArguments().size() > 1 &&
+                                callExpression.getArguments().size() > 1 &&
                                         callExpression.getArguments().get(0) instanceof Literal format &&
                                         format.getType() instanceof StringType &&
                                         CxxQueryHelper.checkPrintfLikeLiteralLegal((String) format.getValue(),
-                                                callExpression.getArguments().subList(1, callExpression.getArgumentsSize() - 1)))
+                                                callExpression.getArguments().subList(1, callExpression.getArgumentsSize() - 1))
                 ))
                 .select("source");
     }

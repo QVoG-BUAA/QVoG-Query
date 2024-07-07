@@ -1,7 +1,9 @@
 package cn.edu.buaa.qvog.query.cxx.misuse.matchProblem;
 
 import cn.edu.buaa.qvog.engine.core.graph.types.PointerType;
+import cn.edu.buaa.qvog.engine.core.graph.values.statements.expressions.Literal;
 import cn.edu.buaa.qvog.engine.core.graph.values.statements.expressions.Reference;
+import cn.edu.buaa.qvog.engine.core.graph.values.statements.expressions.UnaryOperator;
 import cn.edu.buaa.qvog.engine.dsl.fluent.query.CompleteQuery;
 import cn.edu.buaa.qvog.engine.dsl.fluent.query.QueryDescriptor;
 import cn.edu.buaa.qvog.engine.dsl.lib.engine.QueryEngine;
@@ -22,7 +24,10 @@ public class CalculateArrayOffset extends CxxQuery {
                 .from("source", new ContainsBinaryOperator(
                         expression -> expression instanceof Reference reference
                                 && reference.getType() instanceof PointerType,
-                        expression -> new ContainsUnaryOperator("sizeof").test(expression),
+                        value -> value.toStream().anyMatch(
+                                v -> v instanceof UnaryOperator unary &&
+                                        "sizeof".equals(unary.getOperator()) &&
+                                        unary.getOperand() instanceof Literal),
                         null))
                 .select("source");
     }

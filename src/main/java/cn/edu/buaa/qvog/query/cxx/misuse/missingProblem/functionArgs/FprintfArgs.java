@@ -18,6 +18,9 @@ public class FprintfArgs extends CxxQuery {
     public static void main(String[] args) {
         QueryEngine.getInstance()
                 .execute(FprintfArgs.class.getSimpleName(), new FprintfArgs())
+                .execute(OpenArgs.class.getSimpleName(), new OpenArgs())
+                .execute(PrintfArgs.class.getSimpleName(), new PrintfArgs())
+                .execute(RsaSize.class.getSimpleName(), new RsaSize())
                 .close();
     }
 
@@ -27,12 +30,12 @@ public class FprintfArgs extends CxxQuery {
                 .from("source", value -> value.toStream().anyMatch(
                         e -> e instanceof CallExpression callExpression &&
                                 "fprintf".equals(callExpression.getFunction().getName()) &&
-                                !(callExpression.getArgumentsSize() < 2
+                                callExpression.getArgumentsSize() >= 2
                                         && callExpression.getArgumentAt(1) instanceof Literal format
-                                        && !(format.getType() instanceof StringType)
+                                        && format.getType() instanceof StringType
                                         && CxxQueryHelper.checkPrintfLikeLiteralLegal((String) format.getValue(),
                                         callExpression.getArguments().subList(2, callExpression.getArgumentsSize()))
-                                )))
+                                ))
                 .select("source");
     }
 }

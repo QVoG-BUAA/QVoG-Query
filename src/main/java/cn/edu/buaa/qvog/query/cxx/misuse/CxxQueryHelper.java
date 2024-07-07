@@ -94,6 +94,7 @@ public class CxxQueryHelper {
         return false;
     }
 
+    // return if it has problem
     public static Boolean checkPrintfLikeLiteralLegal(String literal, List<Expression> arguments) {
         List<String> formats = new ArrayList<>();
         Pattern pattern = Pattern.compile("%(s|d|f|lf|ld)");
@@ -104,7 +105,7 @@ public class CxxQueryHelper {
 
         // size check
         if (formats.size() != arguments.size()) {
-            return false;
+            return true;
         }
         // type check
         for (int i = 0; i < arguments.size(); i++) {
@@ -113,15 +114,15 @@ public class CxxQueryHelper {
             if (arg instanceof Reference variable) {
                 String type = variable.getType().getName();
                 if (!type.equals(expectedType)) {
-                    return false;
+                    return true;
                 }
             } else if (arg instanceof Literal argLiteral) {
                 String type = argLiteral.getType().getName();
                 if (!type.equals(expectedType)) {
-                    return false;
+                    return true;
                 }
             }
         }
-        return true;
+        return false;
     }
 }

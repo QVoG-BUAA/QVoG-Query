@@ -4,6 +4,7 @@ import cn.edu.buaa.qvog.engine.core.graph.values.statements.DeclarationStatement
 import cn.edu.buaa.qvog.engine.core.graph.values.statements.IfStatement;
 import cn.edu.buaa.qvog.engine.core.graph.values.statements.expressions.AssignExpression;
 import cn.edu.buaa.qvog.engine.core.graph.values.statements.expressions.CallExpression;
+import cn.edu.buaa.qvog.engine.core.graph.values.statements.expressions.cxx.virtuals.CxxFunctionExit;
 import cn.edu.buaa.qvog.engine.dsl.fluent.query.CompleteQuery;
 import cn.edu.buaa.qvog.engine.dsl.fluent.query.QueryDescriptor;
 import cn.edu.buaa.qvog.engine.dsl.lib.engine.QueryEngine;
@@ -42,7 +43,7 @@ public class FunctionReturnCheck extends CxxQuery {
                         .source("source")
                         .barrier("barrier")
                         .sink("sink")
-                        .specialSink(new ContainsCxxSystemExit())
+                        .specialSink(value -> value instanceof CxxFunctionExit)
                         .as("path").exists())
                 .select("source", "sink");
     }

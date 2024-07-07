@@ -25,7 +25,7 @@ public class MemoryNotFree extends CxxQuery {
                 .where(TaintFlowPredicate.with()
                         .source("source")
                         .sink("sink")
-                        .setFlowSensitive(false)
+//                        .setFlowSensitive(false)
                         .addSysExitAsSink(true)
                         .specialSink(new ContainsCxxSystemExit())
                         .as("path").exists())

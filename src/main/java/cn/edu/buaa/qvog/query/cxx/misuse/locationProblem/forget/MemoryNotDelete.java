@@ -9,6 +9,7 @@ import cn.edu.buaa.qvog.engine.dsl.lib.flow.TaintFlowPredicate;
 import cn.edu.buaa.qvog.engine.language.cxx.CxxQuery;
 import cn.edu.buaa.qvog.engine.language.cxx.lib.ContainsCxxSystemExit;
 
+// 2
 public class MemoryNotDelete extends CxxQuery {
     public static void main(String[] args) {
         QueryEngine.getInstance()

@@ -23,7 +23,7 @@ public class RandAndSrand extends CxxQuery {
                 .where(InverseControlAndCgFlowPredicate.builder()
                         .source("source")
                         .sink("sink")
-                        .addFunctionEntryAsSink(true)
+                        .setFlowSensitive(false)
                         .as("path").exists())
                 .select("source");
     }
