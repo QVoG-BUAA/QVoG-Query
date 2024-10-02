@@ -1,24 +1,24 @@
 # QVoG Query
 
-QVoG 查询库
+QVoG Query Library
 
 ---
 
-## 项目构建
+## Project Setup
 
-该项目的构建依赖于 [QVoG-Engine](https://github.com/QVoG-BUAA/QVoG-Engine)，需要将其构建生成的 `QVoGine.jar` 放置于项目下的 `lib` 目录。
+This project depends on the QVoG-Engine. You need to place the `QVoGine.jar` built by it in the `lib` directory of the project.
 
-在 IDEA 中，选择 Build > Build Artifacts... > Query:jar > Build 生成 jar 包至 `out` 目录下。生成的 jar 包可由 [QVoG-Executor](https://github.com/QVoG-BUAA/QVoG-Executor) 加载执行，执行方式见对应仓库。
+In IDEA, select Build > Build Artifacts... > Query:jar > Build to generate a jar package in the `out` directory. The generated jar package can be loaded and executed by the QVoG-Executor. Refer to the corresponding repository for execution details.
 
-## 快速开始
+## Quick Start
 
-### 命名格式
+### Naming Format
 
-每种语言的查询都应放在 `query.<language>` 包下，`query` 外或 `language` 下可以有任意包，但 `query` 必须直接包含 `<language>`。
+Queries for each language should be placed under the `query.<language>` package. `query` must directly contain `<language>`, though there can be any other packages outside `query` or under `language`.
 
-### 漏洞模式类
+### Vulnerability Pattern Classes
 
-对于每一种漏洞模式，都需要编写独立的类代表一个查询规则。默认会以类名为查询名称，可以通过重载 `getQueryName()` 自定义查询名称。查询的核心逻辑位于 `run()` 方法内部。
+For each vulnerability pattern, you need to write a separate class to represent a query rule. By default, the class name will be used as the query name, but you can customize it by overriding `getQueryName()`. The core logic of the query resides in the `run()` method.
 
 ```java
 public class CustomQuery extends PythonQuery {
@@ -38,111 +38,111 @@ public class CustomQuery extends PythonQuery {
 }
 ```
 
-其中的 `main` 方法用于在编写时进行测试，如果要使用，则需要在项目根目录添加 `config.json`，具体格式见 [QVoG-Executor](https://github.com/QVoG-BUAA/QVoG-Executor)。
+The `main` method is used for testing during development. If you wish to use it, you need to add a `config.json` in the root directory of the project. The specific format can be found in QVoG-Executor.
 
-### 查询编写
+### Query Writing
 
-可以使用 Fluent API 编写查询，基本使用方式如下。
+You can use the Fluent API to write queries. The basic usage is as follows.
 
 ```java
 @Override
 public CompleteQuery run() {
-    return QueryDesciptor.open()  // 开启一个查询
-        .from("source", CallExpression.class)  // 选择所有包含 CallExpression 的节点作为 "source"
-        .from("sink", new ContainsFunctionCall("open")) // 选择所有满足 Predicate 的节点作为 "sink"
+    return QueryDesciptor.open()  // Open a query
+        .from("source", CallExpression.class)  // Select all nodes containing CallExpression as "source"
+        .from("sink", new ContainsFunctionCall("open")) // Select all nodes satisfying the Predicate as "sink"
         .fromP("barrier", value -> value.toStream()
-             .anyMatch(v -> v instanceof IfStatement))  // 构造 "barrier" 需要满足的条件
-        .where(TaintFlowPredicate.with()  // 开始构造一个 TaintFlowPredicate
-             .source("source")     // 以 "source" 表为 Source
-             .sink("sink")         // 以 "sink" 表为 Sink
-             .barrier("barrier")   // 以 "barrier" 表为 Barrier
-             .as("path")           // 将路径结果存储在表 "path" 中的 "source", "sink", "path" 列
-             .exists())            // 返回构造的 FlowPredicate
-        .select("source", "sink", "path");     // 选择表中的 "source"，"sink"，"path" 列
-    }
+             .anyMatch(v -> v instanceof IfStatement))  // Build "barrier" with the specified condition
+        .where(TaintFlowPredicate.with()  // Begin building a TaintFlowPredicate
+             .source("source")     // Use "source" as the Source table
+             .sink("sink")         // Use "sink" as the Sink table
+             .barrier("barrier")   // Use "barrier" as the Barrier table
+             .as("path")           // Store the path results in the "path" table with "source", "sink", "path" columns
+             .exists())            // Return the built FlowPredicate
+        .select("source", "sink", "path");     // Select the "source", "sink", and "path" columns
 }
 ```
 
-可能的输出如下。
+The possible outputs are as follows.
 
 | source                                        | sink                                                         | path     |
 | --------------------------------------------- | ------------------------------------------------------------ | -------- |
 | (prod.py:59) filename = request.args.get('p') | (prod.py:61) data = open(filename, 'rb').read()              | 59 -> 61 |
 | (prod.py:67) filename = request.args.get('p') | (prod.py:69) data = open(os.path.join(base_path, filename), 'rb... | 67 -> 69 |
 
-## 高级查询编写
+## Advanced Query Writing
 
 ### from
 
-from 的语义是从图数据库中选择指定的数据，组成一张表（`ITable`）。from 可以串联，从而得到多张表的集合（`ITableSet`）。
+The `from` clause is used to select specified data from a graph database, forming a table (`ITable`). The `from` clause can be chained together to obtain a collection of multiple tables (`ITableSet`).
 
-每一个 `from` 语句都代表了一张表，类型为 `DataTable`，但有两种内容，一种是一般的 `DataColumn`，另一种是 `PredicateColumn`。`DataColumn` 包含数据，而 `PredicateColumn` 则是通过 `Predicate` 来判断元素是否在表中。
+Each `from` statement represents a table of type `DataTable`, but there are two types of contents: one is a general `DataColumn`, and the other is a `PredicateColumn`. `DataColumn` contains data, while `PredicateColumn` determines whether elements are in the table through a `Predicate`.
 
-每张表都包含且只包含一列，表名和列名相同，都为 `from` 的 `alias` 参数。
+Each table contains exactly one column, with the table name and column name being the same, both set to the `alias` parameter of the `from`.
 
-> 你可以通过 `fromP` 得到含 `PredicateColumn` 的表。
+> You can obtain a table containing a `PredicateColumn` using `fromP`.
 
-From 得到的表均启用索引，能够快速判断元素是否在表中。
+The tables obtained from `from` utilize indexing, enabling quick checks to determine whether elements are present in the tables.
 
-> 在 from 中，你可以手动指定 `cacheTag`，从而将其缓存。
+> In the `from` clause, you can manually specify a `cacheTag` to cache the results.
 
 ### where
 
-where 的语义是从 from 得到的表中，进行筛选或者组合。
+The `where` clause is used to filter or combine data from the tables obtained through the `from` clause.
 
 #### Filter where
 
-> 相关类位于 `cn.edu.buaa.qvog.engine.dsl.fluent.filter` 包下。
+> Related classes are located in the `cn.edu.engine.qvog.engine.dsl.fluent.filter` package.
 
-对某一张表进行筛选，其核心为 `IFilterPredicate`，一般用法如下。可以在使用处构造 `IFilterPredicate`，其使用 `IRowPredicate` 对每一行进行判断，而后者又可以使用 `IValuePredicate` 对行中的列进行判断。
+To filter a particular table, the core component is `IFilterPredicate`. The general usage is as follows: you can construct an `IFilterPredicate` at the point of use, which uses `IRowPredicate` to evaluate each row. The latter can further utilize `IValuePredicate` to assess the columns within a row.
 
 ```java
 QueryDescriptor.open()
     .from("call", CallExpression.class)
-    .where(q -> q.onTable("call")                     // 对 "call" 表进行筛选
-           .where(new ContainsFunctionCall("app.run") // 值满足某 predicate
-                  .onColumn("call")))                 // 在 "call" 列使用 Predicate
+    .where(q -> q.onTable("call")                     // Filter on the "call" table
+           .where(new ContainsFunctionCall("app.run") // The value satisfies a certain predicate
+                  .onColumn("call")))                 // Use the predicate on the "call" column
     .select("call", "Flask app run found!")
     .display();
 ```
 
-当查询比较简单，即只有一个 `from` 时，可以简化 `where` 的编写。
+When the query is simple, consisting of only one `from`, the `where` clause can be simplified.
 
 ```java
+
 QueryDescriptor.open()
-    .from("call", CallExpression.class)
-    .where(q -> q.onTable("call")                       // 对 "call" 表进行筛选
-           .where(new ContainsFunctionCall("app.run"))) // 表中唯一的列的值满足某 predicate
-    .select("call", "Flask app run found!")
-    .display();
+        .from("call", CallExpression.class)
+        .where(q -> q.onTable("call")                   // Filter on the "call" table
+        .where(new ContainsFunctionCall("app.run")))    // The value of the only column in the table satisfies a certain predicate
+        .select("call", "Flask app run found!")
+        .display();
 ```
 
-也可以直接简化为使用一个 `IValuePredicate`，这时需要使用 `whereP` 方法。
+We can also simplify this by using an `IValuePredicate`, where we need to use the `whereP` method.
 
 ```java
 QueryDescriptor.open()
     .from("call", CallExpression.class)
-    .whereP(new ContainsFunctionCall("app.run")) // 唯一的表的唯一的列的值满足某 predicate
+    .whereP(new ContainsFunctionCall("app.run")) // The value of the only column in the unique table satisfies a certain predicate
     .select("call", "Flask app run found!")
     .display();
 ```
 
 #### Join where
 
-> 相关接口位于 `cn.edu.buaa.qvog.engine.dsl.fluent.flow`，相关类位于 `cn.edu.buaa.qvog.engine.dsl.lib.flow`。
+> The relevant interfaces are located in `cn.edu.engine.qvog.engine.dsl.fluent.flow`, and the related classes are in `cn.edu.engine.qvog.engine.dsl.lib.flow`.
 
-对多张表进行可达性判断（流分析），并合成一张表。目前支持了普通的 Data Flow，Control Flow 以及 Taint Flow，底层的遍历支持 DFS，哈密顿通路和欧拉通路三种方式。其核心是 `IFlowPredicate`。
+This feature performs reachability analysis (flow analysis) across multiple tables and synthesizes the results into a single table. Currently, it supports ordinary Data Flow, Control Flow, and Taint Flow. The underlying traversal supports three methods: DFS (Depth-First Search), Hamiltonian Path, and Eulerian Path. The core of this feature is the `IFlowPredicate` interface.
 
-流的基本实现方式如下，不同 `IFlowPredicate` 的实现有所差异。
+The basic implementation of flows is as follows, with variations depending on the specific `IFlowPredicate` implementation:
 
-1. 获取 Source、Sink、Barrier 对应的表。
-2. 分别以 Source 中的每一个 `Vaule` 进行遍历，如能够不经过 Barrier 到达 Sink，则将 Source、Sink 和 Path 添加到结果表中。
+1. Obtain the tables corresponding to Source, Sink, and Barrier.
+2. Traverse from each `Value` in the Source. If a path can be found from the Source to the Sink without passing through any Barriers, then add the Source, Sink, and Path to the result table.
 
-> Source 必须是包含 `DataColumn`，不能是包含 `PredicateColumn` 的表。Barrier 和 Sink 无限制。
+> The Source must be a table containing `DataColumn` and cannot be a table with `PredicateColumn`. There are no restrictions on Barrier and Sink.
 
-若省略 Barrier，则默认所有节点都**不是** Barrier；若省略 Sink，则默认所有节点都**是** Sink。
+If the Barrier is omitted, by default, all nodes are **not** Barriers; if the Sink is omitted, by default, all nodes are **Sinks**.
 
-在使用 `FlowPredicate` 后，会从 From 得到的表中移除指定的 Source、Sink 和 Barrier 表，并添加一张新表，由 `as` 指定其名称，表中的列名即为原本的表名，表中路径的列明与表名相同。例如，对于如下的查询，
+After using `FlowPredicate`, the specified Source, Sink, and Barrier tables will be removed from the table obtained by `From`, and a new table will be added, with its name specified by `as`. The column names in the new table will be the same as the original table names, and the column name for the path will also be the same as the table name. For example, in the following query:
 
 ```java
 QueryDescriptor.open()
@@ -156,7 +156,7 @@ QueryDescriptor.open()
                 .display();
 ```
 
-其可能输出结果如下。
+The possible outputs are as follows.
 
 | input                                        | exec                    | path           |
 | -------------------------------------------- | ----------------------- | -------------- |
@@ -165,5 +165,4 @@ QueryDescriptor.open()
 
 ### select
 
-Select 即为按顺序从 from 和 where 得到的结果中选取指定列。只有当查询中只存在一张表时可以使用 select，否则需要用 `IFlowPredicate` 进行 Join。
-
+The `Select` operation is used to pick specified columns in order from the results obtained by the `from` and `where` clauses. The `Select` can only be used when there is a single table in the query. If there are multiple tables, an `IFlowPredicate` must be used to perform a Join.
