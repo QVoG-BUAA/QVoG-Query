@@ -20,7 +20,7 @@
             <artifactId>engine</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/lib/QVoGine.jar</systemPath>
+            <systemPath>${project.basedir}/lib/QVoGine-1.0.jar</systemPath>
         </dependency>
     </dependencies>
 

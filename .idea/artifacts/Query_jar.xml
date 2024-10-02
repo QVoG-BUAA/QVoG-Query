@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/out</output-path>
     <root id="root">
       <element id="archive" name="Query.jar">
-        <element id="module-output" name="Query" />
+        <element id="module-output" name="QVoG-Query" />
       </element>
     </root>
   </artifact>

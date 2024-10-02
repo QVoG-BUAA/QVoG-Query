@@ -6,14 +6,18 @@ QVoG Query Library
 
 ## Project Setup
 
-This project depends on the QVoG-Engine. You need to place the `QVoGine.jar` built by it in the `lib` directory of the project.
+This project depends on the QVoG-Engine. You need to place the `QVoGine-1.0.jar` built by it in the `lib` directory of the project.
 
-In IDEA, select Build > Build Artifacts... > Query:jar > Build to generate a jar package in the `out` directory. The generated jar package can be loaded and executed by the QVoG-Executor. Refer to the corresponding repository for execution details.
-=======
-该项目的构建依赖于 [QVoG-Engine](https://github.com/QVoG-BUAA/QVoG-Engine)，需要将其构建生成的 JAR 包放置于项目下的 `lib` 目录，并根据版本号修改 `pom.xml` 中的引用。
+In IDEA, execute `maven install` to build the project. The generated jar package will be located in the `target` directory.
 
-在 IDEA 中，使用 maven install 在 target 目录下生成 JAR 包，生成的 JAR 包可由 QVoG-Engine 加载运行。
->>>>>>> 186b3fd2f5b594ff6ac963b3a4f254d0666e370a
+- We can create the following file structure to run in terminal.
+
+```text
+config.json
+QVoGine-1.0.jar
+- lib
+    - Query-1.0.jar
+```
 
 ## Quick Start
 

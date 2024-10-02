@@ -6,9 +6,18 @@ QVoG 查询库
 
 ## 项目构建
 
-该项目的构建依赖于 QVoG-Engine，需要将其构建生成的 `QVoGine.jar` 放置于项目下的 `lib` 目录。
+该项目的构建依赖于 QVoG-Engine，需要将其构建生成的 `QVoGine-1.0.jar` 放置于项目下的 `lib` 目录。
 
-在 IDEA 中，选择 Build > Build Artifacts... > Query:jar > Build 生成 jar 包至 `out` 目录下。生成的 jar 包可由 QVoG-Executor 加载执行，执行方式见对应仓库。
+在 IDEA 中，执行 `maven install` 来构建项目。生成的 jar 包将位于 `target` 目录中。
+
+- 我们可以创建以下文件结构以在终端中运行
+
+```text
+config.json
+QVoGine-1.0.jar
+- lib
+    - Query-1.0.jar
+```
 
 ## 快速开始
 
