@@ -1,4 +1,4 @@
-package cn.edu.query.qvog.query.arkts;
+package cn.edu.query.qvog.query.arkts.security;
 
 import cn.edu.engine.qvog.engine.core.graph.values.statements.expressions.CallExpression;
 import cn.edu.engine.qvog.engine.core.graph.values.statements.expressions.Literal;
@@ -12,7 +12,7 @@ import cn.edu.query.qvog.query.cxx.misuse.outdateProblem.Encrypt3DES;
 public class UseMathrandom extends ArkTSQuery {
     public static void main(String[] args) {
         QueryEngine.getInstance()
-                .execute(arktsTest.class.getSimpleName(), new arktsTest())
+                .execute(UseMathrandom.class.getSimpleName(), new UseMathrandom())
                 .close();
     }
 
@@ -21,8 +21,20 @@ public class UseMathrandom extends ArkTSQuery {
         return QueryDescriptor.open()
                 .from("source", value -> value.toStream().anyMatch(
                         v -> v instanceof CallExpression callExpression &&
-                                callExpression.getFunction().getName().contains("random")
-                ))
+                                callExpression.getFunction().getName().contains("random")))
                 .select("source");
     }
 }
+
+
+/*
+function generateRandom(min: number, max: number){
+    let tmp: number = Math.random();
+    return Math.floor(tmp * (max - min) + min);
+}
+
+function getRandomStudent(students: []){
+    let num: number = generateRandom(0, students.length);
+    return students[num];
+}
+*/
