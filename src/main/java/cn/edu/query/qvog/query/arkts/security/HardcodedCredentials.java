@@ -17,7 +17,7 @@ public class HardcodedCredentials extends ArkTSQuery {
     }
 
     public boolean hardcodedCredential(String content){
-//        content = content.toLowerCase();
+        content = content.toLowerCase();
         if(content.contains("password")||content.contains("username")){
             return true;
         }
@@ -28,7 +28,8 @@ public class HardcodedCredentials extends ArkTSQuery {
     public CompleteQuery run() {
         return QueryDescriptor.open()
                 .from("hardcodedCredential", value -> value.toStream().anyMatch(
-                        v -> v instanceof AssignExpression expression && this.hardcodedCredential(expression.toString())))
+                        v -> v instanceof AssignExpression expression && expression.getValue() instanceof Literal literal
+                && hardcodedCredential(literal.toString())))
                 .fromP("output", value -> value.toStream().anyMatch(
                         v -> v instanceof CallExpression callExpression &&
                                 callExpression.getFunction().getName().contains("log")))
@@ -38,7 +39,7 @@ public class HardcodedCredentials extends ArkTSQuery {
                         .sink("output")
                         .as("path").exists())
                 // 选择查询结果
-                .select("hardcodedCredential", "output");
+                .select("hardcodedCredential");
     }
 }
 

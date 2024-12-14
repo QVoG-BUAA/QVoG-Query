@@ -57,6 +57,6 @@ public class HighFrequencyHiLog extends ArkTSQuery{
                         .sink("sink")
                         .barrier("barrier")
                         .as("flow").exists())
-                .select("sink");
+                .select("source", "sink");
     }
 }
