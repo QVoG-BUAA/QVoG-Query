@@ -7,6 +7,8 @@ import cn.edu.engine.qvog.engine.core.graph.values.statements.expressions.Litera
 import cn.edu.engine.qvog.engine.dsl.fluent.query.CompleteQuery;
 import cn.edu.engine.qvog.engine.dsl.fluent.query.QueryDescriptor;
 import cn.edu.engine.qvog.engine.dsl.lib.engine.QueryEngine;
+import cn.edu.engine.qvog.engine.dsl.lib.flow.DataFlowPredicate;
+import cn.edu.engine.qvog.engine.dsl.lib.flow.ControlFlowPredicate;
 import cn.edu.engine.qvog.engine.dsl.lib.flow.TaintFlowPredicate;
 import cn.edu.engine.qvog.engine.language.ArkTS.ArkTSQuery;
 import cn.edu.engine.qvog.engine.language.shared.predicate.ContainsFunctionCall;

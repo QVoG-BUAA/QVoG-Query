@@ -23,6 +23,7 @@ import hilog from '@ohos.hilog';
 @Entry
 @Component
 struct Index {
+    private i: string = "str";
     build() {
             Column() {
                 Button()

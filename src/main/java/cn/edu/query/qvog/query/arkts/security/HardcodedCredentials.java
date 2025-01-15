@@ -18,10 +18,7 @@ public class HardcodedCredentials extends ArkTSQuery {
 
     public boolean hardcodedCredential(String content){
         content = content.toLowerCase();
-        if(content.contains("password")||content.contains("username")){
-            return true;
-        }
-        return false;
+        return content.contains("password") || content.contains("username");
     }
 
     @Override
@@ -33,12 +30,10 @@ public class HardcodedCredentials extends ArkTSQuery {
                 .fromP("output", value -> value.toStream().anyMatch(
                         v -> v instanceof CallExpression callExpression &&
                                 callExpression.getFunction().getName().contains("log")))
-                // Step 3: 检测敏感信息是否传递给输出/展示
                 .where(TaintFlowPredicate.with()
                         .source("hardcodedCredential")
                         .sink("output")
                         .as("path").exists())
-                // 选择查询结果
                 .select("hardcodedCredential");
     }
 }
