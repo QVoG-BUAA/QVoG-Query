@@ -1,6 +1,7 @@
 package cn.edu.query.qvog.query.cxx.misuse.matchProblem;
 
 import cn.edu.engine.qvog.engine.core.graph.types.PointerType;
+import cn.edu.engine.qvog.engine.core.graph.values.statements.expressions.CallExpression;
 import cn.edu.engine.qvog.engine.core.graph.values.statements.expressions.Literal;
 import cn.edu.engine.qvog.engine.core.graph.values.statements.expressions.Reference;
 import cn.edu.engine.qvog.engine.core.graph.values.statements.expressions.UnaryOperator;
@@ -9,6 +10,8 @@ import cn.edu.engine.qvog.engine.dsl.fluent.query.QueryDescriptor;
 import cn.edu.engine.qvog.engine.dsl.lib.engine.QueryEngine;
 import cn.edu.engine.qvog.engine.language.cxx.CxxQuery;
 import cn.edu.engine.qvog.engine.language.shared.predicate.ContainsBinaryOperator;
+import cn.edu.engine.qvog.engine.language.shared.predicate.ContainsFunctionCall;
+import org.apache.tinkerpop.gremlin.process.traversal.Contains;
 
 public class CalculateArrayOffset extends CxxQuery {
     public static void main(String[] args) {

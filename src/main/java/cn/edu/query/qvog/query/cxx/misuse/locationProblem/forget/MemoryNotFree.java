@@ -20,9 +20,11 @@ public class MemoryNotFree extends CxxQuery {
     public CompleteQuery run() {
         return QueryDescriptor.open()
                 .from("source", new ContainsMemoryAllocFunction())
+                .from("barrier", new ContainsFunctionCall("realloc"))
                 .from("sink", new ContainsFunctionCall("free"))
                 .where(TaintFlowPredicate.with()
                         .source("source")
+                        .barrier("barrier")
                         .sink("sink")
 //                        .setFlowSensitive(false)
                         .addSysExitAsSink(true)

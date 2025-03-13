@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact name="Query:jar2">
+    <output-path>$PROJECT_DIR$/out/artifacts/Query_jar2</output-path>
+    <root id="root">
+      <element id="archive" name="Query.jar">
+        <element id="module-output" name="Query" />
+      </element>
+      <element id="library" level="project" name="QVoGine (9)" />
+      <element id="library" level="project" name="QVoGine (8)" />
+      <element id="library" level="module" name="Maven: cn.edu.engine.qvog:engine:1.0" module-name="Query" />
+    </root>
+  </artifact>
+</component>
