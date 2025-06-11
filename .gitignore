@@ -76,3 +76,5 @@ fabric.properties
 
 /lib
 config.json
+
+test.bat
