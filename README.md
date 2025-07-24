@@ -1,12 +1,45 @@
 # QVoG Query
 
-QVoG Query Library
+This project serves as a library for defining and storing queries used within the QVoG-Engine.
 
----
+## Project Structure
 
+The root directory for the query definitions is: `src/main/java/cn/edu/query/qvog/query/`
+
+Within this directory, queries are organized by programming language:
+
+*   `cxx.misuse/`
+    Contains queries specifically designed to detect various types of vulnerabilities and misuses in C/C++ code.
+
+    *   `locationProblem/`: Queries related to operations performed at incorrect lifecycle stages.
+        *   `forget/` & `occupy/`: Detects missing or forgotten operations (e.g., resource leaks, unreleased locks).
+        *   `premature/`: Identifies premature or illegal operations during an object's lifetime (e.g., use-after-free).
+    *   `matchProblem/`: Queries identifying operations that do not match expected API patterns or signatures (e.g., incorrect API pairs).
+    *   `missingProblem/`: Queries for detecting omitted checks or necessary operations.
+        *   `functionArgs/`: Identifies missing arguments in function calls.
+        *   `functionReturn/`: Detects the absence of return value checks for function calls.
+        *   `overflowCheck/`: Flags missing type-misuse or value overflow checks.
+        *   `taintCheck/`: Locates missing taint propagation or validation checks.
+    *   `outdateProblem/`: Contains queries for identifying the use of outdated or deprecated APIs.
+    *   `twiceProblem/`: Detects redundant or duplicate operations (e.g., double free, double close, double initialization).
+    *   `CXXQueryHelper.java`: A utility class providing common helper methods to facilitate the writing of C/C++ specific queries.
+
+*   `java/`
+    Contains Java-specific queries. Note: This module is currently not the primary focus of development.
+
+*   `python/`
+    Contains queries designed to detect common bugs in Python code. Each query file includes embedded code comments with sample usage and relevant CWE mappings.
+    *   `CWE_022`: Tainted Path
+    *   `CWE_094`: Code Injection
+    *   `CWE_215`: Flask debug mode
+    *   `CWE_377`: Insecure Temporary File
+    *   `CWE_943`: SQL Injection
+     
 ## Project Setup
 
 This project depends on the QVoG-Engine. You need to place the `QVoGine-1.0.jar` built by it in the `lib` directory of the project.
+
+- the `lib` directory should be put in the root directory of the project.
 
 In IDEA, execute `maven install` to build the project. The generated jar package will be located in the `target` directory.
 
