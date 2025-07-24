@@ -22,18 +22,14 @@ Within this directory, queries are organized by programming language:
         *   `taintCheck/`: Locates missing taint propagation or validation checks.
     *   `outdateProblem/`: Contains queries for identifying the use of outdated or deprecated APIs.
     *   `twiceProblem/`: Detects redundant or duplicate operations (e.g., double free, double close, double initialization).
+    *   `customization/`: Detects some CVEs former, mostly memory issues
     *   `CXXQueryHelper.java`: A utility class providing common helper methods to facilitate the writing of C/C++ specific queries.
 
 *   `java/`
     Contains Java-specific queries. Note: This module is currently not the primary focus of development.
 
 *   `python/`
-    Contains queries designed to detect common bugs in Python code. Each query file includes embedded code comments with sample usage and relevant CWE mappings.
-    *   `CWE_022`: Tainted Path
-    *   `CWE_094`: Code Injection
-    *   `CWE_215`: Flask debug mode
-    *   `CWE_377`: Insecure Temporary File
-    *   `CWE_943`: SQL Injection
+    Contains queries designed to detect common bugs in Python code. Each query file includes embedded code comments with sample usage and relevant CWE mappings. (e.g., `CWE_022`, `CWE_094`, etc.).
      
 ## Project Setup
 
